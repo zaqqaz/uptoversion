@@ -12,7 +12,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/zaqqaz/wspr.git"
+    "url": "https://github.com/zaqqaz/uptoversion.git"
   },
   "author": "Denis Artyuhovich (zaqqaz) <i@denis.by>",
   "bin": {
