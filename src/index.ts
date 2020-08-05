@@ -1,12 +1,13 @@
 import { execSync } from 'child_process';
 import fs from "fs";
+import { Octokit } from "@octokit/rest";
 
 enum PackageManager {
     Npm = 'npm',
     Yarn = 'yarn',
 }
 
-const randomString = (length: number) => [ ...Array(length) ].map(() => (~~(Math.random() * 36)).toString(36)).join('');
+const randomString = (length: number) => [...Array(length)].map(() => (~~(Math.random() * 36)).toString(36)).join('');
 
 function execSyncFromProjectFolder(cmd: string) {
     execSync(`cd ./${root} && ${cmd}`);
@@ -42,17 +43,33 @@ function commit(packageName: string, version: string) {
     ].forEach(execSyncFromProjectFolder);
 }
 
-function createPR(branchName: string, packageName: string, version: string) {
+async function createPR(
+    branchName: string,
+    packageName: string,
+    version: string,
+    repoName: string,
+    baseBranch: string = "master"
+) {
     [
         `git push -u origin ${branchName}`,
-        `hub pull-request -h ${branchName} -m "Update ${packageName} to v.${version}"`
     ].forEach(execSyncFromProjectFolder);
+
+    const [owner, repo] = repoName.split('/')
+    await octokit.pulls.create({
+        owner,
+        repo,
+        title: `Update ${packageName} to v.${version}`,
+        head: branchName,
+        base: baseBranch,
+    });
 }
 
-function run() {
+async function run() {
     const repoName = process.env.RepoName!;
     const packageName = process.env.PackageName!;
     const packageVersion = process.env.PackageVersion!;
+    const baseBranch = process.env.BaseBranch;
+
     const hash = randomString(4);
     const branchName = `${packageName}@${packageVersion}-${hash}`;
 
@@ -60,15 +77,21 @@ function run() {
     createBranch(branchName);
     updatedDependency(PackageManager.Npm, packageName, packageVersion);
     commit(packageName, packageVersion);
-    createPR(branchName, packageName, packageVersion);
+    await createPR(branchName, packageName, packageVersion, repoName, baseBranch);
 }
+
+const octokit = new Octokit({
+    auth: `token ${process.env.GITHUB_TOKEN}`
+});
 
 const root = fs.mkdtempSync("tmp");
 
-try {
-    run();
-} catch (e) {
-    console.error(e);
-}
+run()
+    .then(() => {
+        fs.rmdirSync(root, { recursive: true });
+    })
+    .catch(e => {
+        console.error(e);
+        fs.rmdirSync(root, { recursive: true });
+    });
 
-fs.rmdirSync(root, { recursive: true });

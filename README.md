@@ -4,9 +4,6 @@
 # UPTOVERSION
 Raise a pull request to update the dependency to the specific version in any project
 
-### Pre-requirements
-You should have [HUB](https://formulae.brew.sh/formula/hub) on environment where you plan to use uptodate
-
 ### Installation
 
 - For CI
@@ -21,9 +18,9 @@ npm i -g uptoversion
 
 ### Usage
 
-Just pass RepoName, PackageName, PackageVersion and run uptoversion
+Just pass GITHUB_TOKEN, RepoName, PackageName, PackageVersion, BaseBranch(optional, default - "master") and run uptoversion
 ```
-RepoName="zaqqaz/uptoversion" PackageName="typescript" PackageVersion="next" node bin/bin.js
+GITHUB_TOKEN="token" BaseBranch="master" RepoName="zaqqaz/uptoversion" PackageName="typescript" PackageVersion="next" uptoversion
 ```
 
 ## Enjoy 🚀🥤
