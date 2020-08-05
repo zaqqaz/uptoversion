@@ -23,7 +23,7 @@ npm i -g uptoversion
 
 Just pass RepoName, PackageName, PackageVersion and run uptoversion
 ```
-RepoName="zaqqaz/uptoversion" PackageName="typescript" PackageVersion="1" uptoversion
+RepoName="zaqqaz/uptoversion" PackageName="typescript" PackageVersion="next" node bin/bin.js
 ```
 
 ## Enjoy 🚀🥤
