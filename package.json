@@ -1,6 +1,6 @@
 {
   "name": "uptoversion",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Raise a pull request to update the dependency to the specific version in any project",
   "keywords": [
     "git",
