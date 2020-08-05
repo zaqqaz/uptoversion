@@ -16,7 +16,7 @@
   },
   "author": "Denis Artyuhovich (zaqqaz) <i@denis.by>",
   "bin": {
-    "wspr": "./bin/bin.js"
+    "uptoversion": "./bin/bin.js"
   },
   "license": "MIT",
   "scripts": {
