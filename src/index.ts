@@ -17,8 +17,11 @@ function execSyncFromProjectFolder(cmd: string) {
 }
 
 function checkoutRepo(repoName: string) {
-    const cmd = `git clone https://${process.env.GITHUB_TOKEN}@github.com/${repoName}.git ${root}`;
-    execSync(cmd);
+    [
+        `git config --global user.email "UpToVersion@UpToVersion.com"`,
+        `git config --global user.name "UpToVersion"`,
+        `git clone https://${process.env.GITHUB_TOKEN}@github.com/${repoName}.git ${root}`
+    ].forEach(execSync);
 }
 
 function createBranch(branchName: string) {
@@ -60,6 +63,7 @@ async function createPR(
         title: `Update ${packageName} to v.${version}`,
         head: branchName,
         base: baseBranch,
+        maintainer_can_modify: true,
     });
 }
 
