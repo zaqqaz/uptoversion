@@ -17,7 +17,7 @@ function execSyncFromProjectFolder(cmd: string) {
 }
 
 function checkoutRepo(repoName: string) {
-    const cmd = `git clone git@github.com:${repoName}.git ${root}`;
+    const cmd = `git clone https://${process.env.GITHUB_TOKEN}@github.com/${repoName}.git ${root}`;
     execSync(cmd);
 }
 
