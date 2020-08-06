@@ -16,16 +16,17 @@ function execSyncFromProjectFolder(cmd: string) {
     execSync(`cd ./${root} && ${cmd}`);
 }
 
-function setupGit() {
-    [
-        `git config user.email "UpToVersion@UpToVersion.com"`,
-        `git config user.name "UpToVersion"`,
-    ].forEach(execSync);
-}
 function checkoutRepo(repoName: string) {
     [
         `git clone https://${process.env.GITHUB_TOKEN}@github.com/${repoName}.git ${root}`,
     ].forEach(execSync);
+}
+
+function setupGit() {
+    [
+        `git config user.email "UpToVersion@UpToVersion.com"`,
+        `git config user.name "UpToVersion"`,
+    ].forEach(execSyncFromProjectFolder);
 }
 
 function createBranch(branchName: string) {
@@ -56,7 +57,7 @@ async function createPR(
     packageName: string,
     version: string,
     repoName: string,
-    baseBranch: string = 'master'
+    baseBranch: string
 ) {
     [`git push -u origin ${branchName}`].forEach(execSyncFromProjectFolder);
 
@@ -75,13 +76,13 @@ async function run() {
     const repoName = process.env.RepoName!;
     const packageName = process.env.PackageName!;
     const packageVersion = process.env.PackageVersion!;
-    const baseBranch = process.env.BaseBranch;
+    const baseBranch = process.env.BaseBranch || "master";
 
     const hash = randomString(4);
     const branchName = `${packageName}@${packageVersion}-${hash}`;
 
-    setupGit();
     checkoutRepo(repoName);
+    setupGit();
     createBranch(branchName);
     updatedDependency(PackageManager.Npm, packageName, packageVersion);
     commit(packageName, packageVersion);
