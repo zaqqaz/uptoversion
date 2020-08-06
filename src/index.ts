@@ -16,11 +16,15 @@ function execSyncFromProjectFolder(cmd: string) {
     execSync(`cd ./${root} && ${cmd}`);
 }
 
+function setupGit() {
+    [
+        `git config user.email "UpToVersion@UpToVersion.com"`,
+        `git config user.name "UpToVersion"`,
+    ].forEach(execSync);
+}
 function checkoutRepo(repoName: string) {
     [
-        `git config --global user.email "UpToVersion@UpToVersion.com"`,
-        `git config --global user.name "UpToVersion"`,
-        `git clone https://${process.env.GITHUB_TOKEN}@github.com/${repoName}.git ${root}`
+        `git clone https://${process.env.GITHUB_TOKEN}@github.com/${repoName}.git ${root}`,
     ].forEach(execSync);
 }
 
@@ -76,6 +80,7 @@ async function run() {
     const hash = randomString(4);
     const branchName = `${packageName}@${packageVersion}-${hash}`;
 
+    setupGit();
     checkoutRepo(repoName);
     createBranch(branchName);
     updatedDependency(PackageManager.Npm, packageName, packageVersion);
@@ -89,6 +94,10 @@ async function run() {
     );
 }
 
+function beforeFinish() {
+    fs.rmdirSync(root, { recursive: true });
+}
+
 const octokit = new Octokit({
     auth: `token ${process.env.GITHUB_TOKEN}`,
 });
@@ -96,10 +105,13 @@ const octokit = new Octokit({
 const root = fs.mkdtempSync('tmp');
 
 run()
-    .then(() => {
-        fs.rmdirSync(root, { recursive: true });
-    })
+    .then(beforeFinish)
     .catch((e) => {
         console.error(e);
-        fs.rmdirSync(root, { recursive: true });
+        beforeFinish();
     });
+
+process.on('SIGINT', () => {
+    beforeFinish();
+    process.exit(0);
+});
