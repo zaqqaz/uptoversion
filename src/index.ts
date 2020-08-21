@@ -13,7 +13,7 @@ const randomString = (length: number) =>
         .join('');
 
 function execSyncFromProjectFolder(cmd: string) {
-    const customPath = process.env.CustomPath;
+    const customPath = process.env.CustomPath || '';
 
     execSync(`cd ./${root}/${customPath} && ${cmd}`);
 }
