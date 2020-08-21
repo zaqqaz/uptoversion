@@ -18,7 +18,7 @@ npm i -g uptoversion
 
 ### Usage
 
-Just pass GITHUB_TOKEN, RepoName, PackageName, PackageVersion, BaseBranch(optional, default - "master") and run uptoversion
+Just pass GITHUB_TOKEN, RepoName, PackageName, CustomPath(optional, i.e. "packages/myPackage"), PackageVersion, BaseBranch(optional, default - "master") and run uptoversion
 ```
 GITHUB_TOKEN="token" BaseBranch="master" RepoName="zaqqaz/uptoversion" PackageName="typescript" PackageVersion="next" uptoversion
 ```

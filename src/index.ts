@@ -13,7 +13,9 @@ const randomString = (length: number) =>
         .join('');
 
 function execSyncFromProjectFolder(cmd: string) {
-    execSync(`cd ./${root} && ${cmd}`);
+    const customPath = process.env.CustomPath;
+
+    execSync(`cd ./${root}/${customPath} && ${cmd}`);
 }
 
 function checkoutRepo(repoName: string) {
